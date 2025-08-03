@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bloomify - Flower Shop</title>
+    <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap" rel="stylesheet">
+    <style>
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f8f8f8;
+            color: #333;
+        }
+
+        header {
+            background-color: #f4c2c2;
+            color: white;
+            padding: 20px 0;
+            text-align: center;
+            position: relative;
+            z-index: 1;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        header h1 {
+            font-family: 'Great Vibes', cursive;
+            font-size: 3em;
+            margin: 0;
+            transition: transform 0.3s ease-in-out;
+        }
+
+        header h1:hover {
+            transform: scale(1.1);
+        }
+
+        nav ul {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        nav ul li {
+            display: inline;
+            margin: 0 15px;
+        }
+
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+            transition: color 0.3s ease;
+        }
+
+        nav ul li a:hover {
+            color: #333;
+        }
+
+        #cart {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background-color: white;
+            color: #f4c2c2;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        #cart:hover {
+            background-color: #f4c2c2;
+            color: white;
+        }
+
+        #cart-items {
+            display: none;
+            position: absolute;
+            right: 20px;
+            top: 60px;
+            background-color: white;
+            color: #333;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            max-width: 300px;
+            z-index: 2;
+        }
+
+        #cart-items h2 {
+            margin-top: 0;
+        }
+
+        #cart-items ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        #cart-items ul li {
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        #cart-items ul li button {
+            background-color: #f4c2c2;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        #cart-items ul li button:hover {
+            background-color: #c48a8a;
+        }
+
+        #hero {
+            position: relative;
+            overflow: hidden;
+            text-align: center;
+            color: black;
+            padding: 100px 0;
+            background: url('flower-hero.jpg') no-repeat center center/cover;
+        }
+
+        #hero video {
+            position: absolute;
+            top: 0;
+            left: 0;
+            min-width: 100%;
+            min-height: 100%;
+            width: auto;
+            height: auto;
+            z-index: -1;
+            opacity: 0.6;
+        }
+
+        #hero h2 {
+            font-size: 2.5em;
+            margin: 0;
+            transition: transform 0.3s ease-in-out;
+        }
+
+        #hero h2:hover {
+            transform: scale(1.1);
+        }
+
+        #hero p {
+            font-size: 1.2em;
+        }
+
+        #hero .shop-now-button {
+            background-color: #fff;
+            color: #f4c2c2;
+            border: none;
+            padding: 15px 30px;
+            font-size: 1em;
+            font-weight: bold;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 20px;
+            text-decoration: none;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        #hero .shop-now-button:hover {
+            background-color: #f4c2c2;
+            color: white;
+        }
+
+        section {
+            padding: 40px 20px;
+            text-align: center;
+        }
+
+        #about, #services, #products, #contact, #reviews {
+            background-color: #fff;
+            margin: 20px 0;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease-in-out;
+        }
+
+        #about:hover, #services:hover, #products:hover, #contact:hover, #reviews:hover {
+            transform: translateY(-10px);
+        }
+
+        #about {
+            text-align: left;
+            padding: 20px;
+        }
+
+        #about p {
+            font-size: 1.2em;
+            line-height: 1.6;
+        }
+
+        #services {
+            text-align: left;
+            padding: 20px;
+        }
+
+        #services h3 {
+            font-size: 1.5em;
+            margin-top: 0;
+        }
+
+        #services ul {
+            list-style-type: disc;
+            padding-left: 20px;
+        }
+
+        #services ul li {
+            margin-bottom: 10px;
+            font-size: 1.2em;
+        }
+
+        #products .product {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+
+        .product-item {
+            width: 30%;
+            margin: 20px;
+            padding: 20px;
+            background-color: #f0f0f0;
+            border-radius: 10px;
+            box-shadow: 0 0 5px rgba(0,0,0,0.2);
+            transition: transform 0.3s ease-in-out;
+        }
+
+        .product-item:hover {
+            transform: translateY(-5px);
+        }
+
+        .product-item img {
+            max-width: 100%;
+            border-radius: 10px;
+        }
+
+        .product-item h3 {
+            margin-top: 10px;
+            font-size: 1.5em;
+        }
+
+        .product-item p {
+            font-size: 1.2em;
+        }
+
+        .product-item .add-to-cart {
+            background-color: #f4c2c2;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 1em;
+            font-weight: bold;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: background-color 0.3s ease;
+        }
+
+        .product-item .add-to-cart:hover {
+            background-color: #c48a8a;
+        }
+
+        #reviews {
+            text-align: left;
+            padding: 20px;
+        }
+
+        .review {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+            padding: 20px;
+            background-color: #f0f0f0;
+            border-radius: 10px;
+            box-shadow: 0 0 5px rgba(0,0,0,0.1);
+        }
+
+        .review img {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            margin-right: 20px;
+        }
+
+        .review-content {
+            flex: 1;
+        }
+
+        .review-content p {
+            margin: 0;
+            font-size: 1.1em;
+        }
+
+        .review-content p strong {
+            display: block;
+            font-size: 1.2em;
+            margin-bottom: 5px;
+        }
+
+        footer {
+            background-color: #f4c2c2;
+            color: white;
+            text-align: center;
+            padding: 10px 0;
+        }
+
+        #back-to-top {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background-color: #f4c2c2;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            display: none;
+            z-index: 3;
+            transition: background-color 0.3s ease;
+        }
+
+        #back-to-top:hover {
+            background-color: #c48a8a;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Bloomify</h1>
+        <nav>
+            <ul>
+                <li><a href="#hero">Home</a></li>
+                <li><a href="#about">About Us</a></li>
+                <li><a href="#services">Services</a></li>
+                <li><a href="#products">Products</a></li>
+                <li><a href="#reviews">Reviews</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+        </nav>
+        <div id="cart">Cart (<span id="cart-count">0</span>)</div>
+<form id="search-form">
+    <input type="text" id="search-input" placeholder="Search products...">
+    <button type="submit">Search</button>
+</form>
+    </header>
+
+    <section id="hero">
+        <video autoplay muted loop poster="flower-hero.jpg">
+            <source src="C:\Users\home\Desktop\3127085-uhd_3840_2160_24fps.mp4" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
+        <div>
+            <h2>Welcome to Bloomify</h2>
+            <p>Your one-stop shop for beautiful flowers and arrangements</p>
+            <a href="#products" class="shop-now-button">Shop Now</a>
+        </div>
+    </section>
+
+    <section id="about">
+        <h2>About Us</h2>
+        <p>At Bloomify, we are passionate about flowers and committed to bringing the beauty of nature to your doorstep. Founded in 2020, we have quickly become a beloved florist known for our high-quality flowers, innovative designs, and exceptional customer service. Our team of expert florists carefully selects each bloom to ensure freshness and longevity, creating stunning arrangements for every occasion.</p>
+        <p>We believe that flowers have the power to uplift spirits and brighten spaces. Whether you are celebrating a special event, expressing love, or simply adding a touch of beauty to your home, Bloomify is here to help you make every moment memorable. Join our community of flower enthusiasts and discover the joy of fresh flowers with Bloomify.</p>
+    </section>
+
+    <section id="services">
+        <h2>Our Services</h2>
+        <h3>Flower Arrangements</h3>
+        <p>Customized flower arrangements for all occasions including weddings, birthdays, anniversaries, and corporate events.</p>
+        <h3>Subscription Service</h3>
+        <p>Enjoy fresh flowers delivered to your home or office on a weekly or monthly basis with our subscription service.</p>
+        <h3>Event Decoration</h3>
+        <p>Complete floral decorations for events of all sizes, from intimate gatherings to grand celebrations.</p>
+        <h3>Same-Day Delivery</h3>
+        <p>Order by 12 PM and get your flowers delivered the same day. Available in select areas.</p>
+    </section>
+
+    <section id="products">
+        <h2>Our Products</h2>
+        <div class="product">
+            <div class="product-item" data-name="Roses" data-price="20">
+                <img src="rose.jpg" alt="Roses">
+                <h3>Roses</h3>
+                <p>Beautiful and elegant roses in various colors.</p>
+                <button class="add-to-cart">Add to Cart</button>
+            </div>
+            <div class="product-item" data-name="Tulips" data-price="15">
+                <img src="tulip.jpg" alt="Tulips">
+                <h3>Tulips</h3>
+                <p>Fresh and vibrant tulips to brighten up your home.</p>
+                <button class="add-to-cart">Add to Cart</button>
+            </div>
+            <div class="product-item" data-name="Sunflowers" data-price="10">
+                <img src="sunflower.jpg" alt="Sunflowers">
+                <h3>Sunflowers</h3>
+                <p>Bright and cheerful sunflowers to brighten your day.</p>
+                <button class="add-to-cart">Add to Cart</button>
+            </div>
+            <div class="product-item" data-name="Orchids" data-price="25">
+                <img src="orchid.jpg" alt="Orchids">
+                <h3>Orchids</h3>
+                <p>Exotic and graceful orchids to add a touch of elegance.</p>
+                <button class="add-to-cart">Add to Cart</button>
+            </div>
+            <div class="product-item" data-name="Daisies" data-price="12">
+                <img src="daisy.jpg" alt="Daisies">
+                <h3>Daisies</h3>
+                <p>Cheerful and simple daisies for a fresh look.</p>
+                <button class="add-to-cart">Add to Cart</button>
+            </div>
+            <div class="product-item" data-name="Lilies" data-price="18">
+                <img src="lily.jpg" alt="Lilies">
+                <h3>Lilies</h3>
+                <p>Fragrant and beautiful lilies for any setting.</p>
+                <button class="add-to-cart">Add to Cart</button>
+            </div>
+        </div>
+    </section>
+
+    <section id="reviews">
+        <h2>Customer Reviews</h2>
+        <div class="review">
+            <img src="customer1.jpg" alt="Customer 1">
+            <div class="review-content">
+                <p><strong>John Smith</strong> - "Beautiful flowers and excellent service! I highly recommend Bloomify."</p>
+            </div>
+        </div>
+        <div class="review">
+            <img src="customer2.jpg" alt="Customer 2">
+            <div class="review-content">
+                <p><strong>Jane Doe</strong> - "My go-to place for flowers! Always fresh and delivered on time."</p>
+            </div>
+        </div>
+        <div class="review">
+            <img src="customer3.jpg" alt="Customer 3">
+            <div class="review-content">
+                <p><strong>Michael Johnson</strong> - "Impressive variety of flowers and excellent customer service."</p>
+            </div>
+        </div>
+        <div class="review">
+            <img src="customer4.jpg" alt="Customer 4">
+            <div class="review-content">
+                <p><strong>Amy Wilson</strong> - "I love the custom floral arrangements. They always exceed my expectations!"</p>
+            </div>
+        </div>
+        <div class="review">
+            <img src="https://via.placeholder.com/80" alt="Michael Brown">
+            <p><strong>Michael Brown</strong> "The event decorations were stunning. Bloomify made our special day even more memorable."</p>
+        </div>
+        <div class="review">
+            <img src="https://via.placeholder.com/80" alt="Sarah Davis">
+            <p><strong>Sarah Davis</strong> "The selection of flowers is amazing, and the quality is unmatched. I'll definitely be back for more!"</p>
+        </div>
+    </section>
+
+    <section id="contact">
+        <h2>Contact Us</h2>
+        <p>Email: contact@bloomify.com</p>
+        <p>Phone: (123) 456-7890</p>
+    </section>
+
+    <footer>
+        <p>&copy; 2024 Bloomify. All rights reserved.</p>
+    </footer>
+
+    <button id="back-to-top" onclick="scrollToTop()">Back to Top</button>
+
+    <div id="cart-items">
+        <h2>Cart Items</h2>
+        <ul id="cart-list"></ul>
+        <p><strong>Total: $<span id="total-price">0</span></strong></p>
+        <button onclick="clearCart()">Clear Cart</button>
+    </div>
+
+    <script>
+        const cart = [];
+        const cartCount = document.getElementById('cart-count');
+        const cartList = document.getElementById('cart-list');
+        const totalPriceElement = document.getElementById('total-price');
+        const cartItems = document.getElementById('cart-items');
+        const cartButton = document.getElementById('cart');
+        const backToTopButton = document.getElementById('back-to-top');
+
+        document.querySelectorAll('.add-to-cart').forEach(button => {
+            button.addEventListener('click', () => {
+                const productItem = button.closest('.product-item');
+                const productName = productItem.getAttribute('data-name');
+                const productPrice = Number(productItem.getAttribute('data-price'));
+
+                addToCart(productName, productPrice);
+            });
+        });
+
+        cartButton.addEventListener('click', () => {
+            cartItems.style.display = cartItems.style.display === 'block' ? 'none' : 'block';
+        });
+
+        function addToCart(name, price) {
+            cart.push({ name, price });
+            updateCart();
+        }
+
+        function removeFromCart(index) {
+            cart.splice(index, 1);
+            updateCart();
+        }
+
+        function updateCart() {
+            cartCount.textContent = cart.length;
+            cartList.innerHTML = '';
+
+            let totalPrice = 0;
+            cart.forEach((item, index) => {
+                const li = document.createElement('li');
+                li.textContent = `${item.name} - $${item.price}`;
+                const removeButton = document.createElement('button');
+                removeButton.textContent = 'Remove';
+                removeButton.addEventListener('click', () => removeFromCart(index));
+                li.appendChild(removeButton);
+                cartList.appendChild(li);
+
+                totalPrice += item.price;
+            });
+
+            totalPriceElement.textContent = totalPrice.toFixed(2);
+        }
+
+        function clearCart() {
+            cart.length = 0;
+            updateCart();
+        }
+
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 300) {
+                backToTopButton.style.display = 'block';
+            } else {
+                backToTopButton.style.display = 'none';
+            }
+        });
+
+        function scrollToTop() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html>

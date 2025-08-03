@@ -1,0 +1,815 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bloomify - Flower Shop</title>
+    <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap" rel="stylesheet">
+    <style>
+        html {
+            scroll-behavior: smooth;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f8f8f8;
+            color: #333;
+        }
+        header {
+            background-color: #f4c2c2;
+            color: white;
+            padding: 20px 0;
+            text-align: center;
+            position: relative;
+            z-index: 1;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        header h1 {
+            font-family: 'Great Vibes', cursive;
+            font-size: 3em;
+            margin: 0;
+            transition: transform 0.3s ease-in-out;
+        }
+        header h1:hover {
+            transform: scale(1.1);
+        }
+        nav ul {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+        }
+        nav ul li {
+            display: inline;
+            margin: 0 15px;
+        }
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+            transition: color 0.3s ease;
+        }
+        nav ul li a:hover {
+            color: #333;
+        }
+        #cart, #wishlist, #login {
+            position: absolute;
+            top: 20px;
+            background-color: white;
+            color: #f4c2c2;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+        #cart { right: 180px; }
+        #wishlist { right: 100px; }
+        #login { right: 20px; }
+        #cart:hover, #wishlist:hover, #login:hover {
+            background-color: #f4c2c2;
+            color: white;
+        }
+        #cart-items, #wishlist-items, #login-modal, #review-modal, #product-modal {
+            display: none;
+            position: absolute;
+            right: 20px;
+            top: 60px;
+            background-color: white;
+            color: #333;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            max-width: 300px;
+            z-index: 2;
+        }
+        #cart-items h2, #wishlist-items h2, #login-modal h2, #review-modal h2, #product-modal h2 {
+            margin-top: 0;
+        }
+        #cart-items ul, #wishlist-items ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+        #cart-items ul li, #wishlist-items ul li {
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        #cart-items ul li button, #wishlist-items ul li button, #login-modal button, #review-modal button, #product-modal button {
+            background-color: #f4c2c2;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        #cart-items ul li button:hover, #wishlist-items ul li button:hover, #login-modal button:hover, #review-modal button:hover, #product-modal button:hover {
+            background-color: #c48a8a;
+        }
+        #hero {
+            position: relative;
+            overflow: hidden;
+            text-align: center;
+            color: white;
+            padding: 100px 0;
+            background: url('https://ohanafineflowers.com/cdn/shop/articles/Banner_2_b330790c-2cc1-41b7-8bd7-4e833d875088.jpg?v=1691568206') no-repeat center center/cover;
+        }
+        #hero video {
+            position: absolute;
+            top: 0;
+            left: 0;
+            min-width: 100%;
+            min-height: 100%;
+            width: auto;
+            height: auto;
+            z-index: -1;
+            opacity: 0.6;
+        }
+        #hero h2 {
+            font-size: 2.5em;
+            margin: 0;
+            transition: transform 0.3s ease-in-out;
+        }
+        #hero h2:hover {
+            transform: scale(1.1);
+        }
+        #hero p {
+            font-size: 1.2em;
+        }
+        #hero .shop-now-button {
+            background-color: #fff;
+            color: #f4c2c2;
+            border: none;
+            padding: 15px 30px;
+            font-size: 1em;
+            font-weight: bold;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 20px;
+            text-decoration: none;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+        #hero .shop-now-button:hover {
+            background-color: #f4c2c2;
+            color: white;
+        }
+        section {
+            padding: 40px 20px;
+            text-align: center;
+        }
+        #about, #services, #products, #contact, #reviews {
+            background-color: #fff;
+            margin: 20px 0;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease-in-out;
+        }
+        #about:hover, #services:hover, #products:hover, #contact:hover, #reviews:hover {
+            transform: translateY(-10px);
+        }
+        #about {
+            text-align: left;
+            padding: 20px;
+        }
+        #about p {
+            font-size: 1.2em;
+            line-height: 1.6;
+        }
+        #services {
+            text-align: left;
+            padding: 20px;
+        }
+        #services h3 {
+            font-size: 1.5em;
+            margin-top: 0;
+        }
+        #services ul {
+            list-style-type: disc;
+            padding-left: 20px;
+        }
+        #services ul li {
+            margin-bottom: 10px;
+            font-size: 1.2em;
+        }
+        #products .product {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+        .product-item {
+            width: 30%;
+            margin: 20px;
+            padding: 20px;
+            background-color: #f0f0f0;
+            border-radius: 10px;
+            box-shadow: 0 0 5px rgba(0,0,0,0.2);
+            transition: transform 0.3s ease-in-out;
+        }
+        .product-item:hover {
+            transform: translateY(-5px);
+        }
+        .product-item img {
+            max-width: 100%;
+            border-radius: 10px;
+        }
+        .product-item h3 {
+            margin-top: 10px;
+            font-size: 1.5em;
+        }
+        .product-item p {
+            font-size: 1.2em;
+        }
+        .product-item .add-to-cart, .product-item .add-to-wishlist, .product-item .view-details {
+            background-color: #f4c2c2;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 1em;
+            font-weight: bold;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: background-color 0.3s ease;
+            margin-right: 5px;
+        }
+        .product-item .add-to-cart:hover, .product-item .add-to-wishlist:hover, .product-item .view-details:hover {
+            background-color: #c48a8a;
+        }
+        #reviews {
+            text-align: left;
+            padding: 20px;
+        }
+        .review {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+            padding: 20px;
+            background-color: #f0f0f0;
+            border-radius: 10px;
+            box-shadow: 0 0 5px rgba(0,0,0,0.1);
+        }
+        .review img {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            margin-right: 20px;
+        }
+        .review-content {
+            flex: 1;
+        }
+        .review-content p {
+            margin: 0;
+        }
+        .review-content p strong {
+            font-size: 1.2em;
+        }
+        .newsletter {
+            background-color: #f4c2c2;
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            margin-top: 20px;
+        }
+        .newsletter input[type="email"] {
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            margin-right: 10px;
+            width: 250px;
+        }
+        .newsletter button {
+            background-color: white;
+            color: #f4c2c2;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+        .newsletter button:hover {
+            background-color: #f4c2c2;
+            color: white;
+        }
+        footer {
+            background-color: #333;
+            color: white;
+            text-align: center;
+            padding: 20px;
+        }
+        footer a {
+            color: #f4c2c2;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        footer a:hover {
+            color: white;
+        }
+        .map-container {
+            position: relative;
+            padding-bottom: 56.25%;
+            height: 0;
+            overflow: hidden;
+            max-width: 100%;
+            background: #f0f0f0;
+            border-radius: 10px;
+        }
+        .map-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: 0;
+        }
+        #search-bar {
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: center;
+        }
+        #search-bar input {
+            width: 300px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            margin-right: 10px;
+        }
+        #search-bar button {
+            background-color: #f4c2c2;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        #search-bar button:hover {
+            background-color: #c48a8a;
+        }
+        #category-filter {
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: center;
+        }
+        #category-filter select {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.5);
+        }
+        .modal-content {
+            background-color: #fff;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 500px;
+            border-radius: 10px;
+        }
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+        .close:hover, .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Bloomify</h1>
+        <nav>
+            <ul>
+                <li><a href="#about">About</a></li>
+                <li><a href="#services">Services</a></li>
+                <li><a href="#products">Products</a></li>
+                <li><a href="#reviews">Reviews</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+        </nav>
+        <div id="cart">Cart (<span id="cart-count">0</span>)</div>
+        <div id="wishlist">Wishlist</div>
+        <div id="login">Login</div>
+        <div id="cart-items">
+            <h2>Shopping Cart</h2>
+            <ul id="cart-items-list"></ul>
+            <p id="total-price">Total: $0.00</p>
+        </div>
+        <div id="wishlist-items">
+            <h2>Wishlist</h2>
+            <ul id="wishlist-items-list"></ul>
+        </div>
+        <div id="login-modal">
+            <h2>Login</h2>
+            <form id="login-form">
+                <label for="username">Username:</label>
+                <input type="text" id="username" name="username" required>
+                <br><br>
+                <label for="password">Password:</label>
+                <input type="password" id="password" name="password" required>
+                <br><br>
+                <button type="submit">Login</button>
+            </form>
+        </div>
+    </header>
+    <section id="hero">
+        <h2>Welcome to Bloomify</h2>
+        <p>Your one-stop flower shop for every occasion</p>
+        <a href="#products" class="shop-now-button">Shop Now</a>
+    </section>
+    <section id="about">
+        <h2>About Us</h2>
+        <p>Bloomify is dedicated to providing beautiful and fresh flowers for all occasions. With our wide selection of flowers and arrangements, you're sure to find the perfect bloom for any event. Our team of expert florists takes pride in creating stunning floral designs that bring joy and beauty to our customers' lives.</p>
+    </section>
+    <section id="services">
+        <h2>Our Services</h2>
+        <h3>We offer a variety of services including:</h3>
+        <ul>
+            <li>Custom Floral Arrangements</li>
+            <li>Wedding Bouquets and Decorations</li>
+            <li>Event Floral Design</li>
+            <li>Weekly Flower Subscriptions</li>
+        </ul>
+    </section>
+    <section id="products">
+        <h2>Our Products</h2>
+        <div id="search-bar">
+            <input type="text" id="search" placeholder="Search for products...">
+            <button onclick="searchProducts()">Search</button>
+        </div>
+        <div id="category-filter">
+            <select id="category" onchange="filterByCategory()">
+                <option value="all">All Categories</option>
+                <option value="bouquet">Bouquets</option>
+                <option value="arrangement">Arrangements</option>
+                <option value="bunch">Bunches</option>
+            </select>
+        </div>
+        <div class="product">
+            <div class="product-item" data-name="Rose Bouquet" data-price="25" data-category="bouquet">
+                <img src="rose-bouquet.jpg" alt="Rose Bouquet">
+                <h3>Rose Bouquet</h3>
+                <p>$25.00</p>
+                <button class="add-to-cart">Add to Cart</button>
+                <button class="add-to-wishlist">Add to Wishlist</button>
+                <button class="view-details">View Details</button>
+            </div>
+            <div class="product-item" data-name="Purple orchids Arrangement" data-price="30" data-category="arrangement">
+                <img src="or.jpg" alt="Tulip Arrangement">
+                <h3>Purple orchids Arrangement</h3>
+                <p>$30.00</p>
+                <button class="add-to-cart">Add to Cart</button>
+                <button class="add-to-wishlist">Add to Wishlist</button>
+                <button class="view-details">View Details</button>
+            </div>
+            <div class="product-item" data-name="Sunflower Bunch" data-price="20" data-category="bunch">
+                <img src="sunflower-bunch.jpg" alt="Sunflower Bunch">
+                <h3>Sunflower Bunch</h3>
+                <p>$20.00</p>
+                <button class="add-to-cart">Add to Cart</button>
+                <button class="add-to-wishlist">Add to Wishlist</button>
+                <button class="view-details">View Details</button>
+            </div>
+<div class="product-item" data-name="Lily Bunch" data-price="20" data-category="bunch">
+                <img src="Lily Bunch.jpg" alt="Lily bunch">
+                <h3>Lily bunch</h3>
+                <p>$20.00</p>
+                <button class="add-to-cart">Add to Cart</button>
+                <button class="add-to-wishlist">Add to Wishlist</button>
+                <button class="view-details">View Details</button>
+            </div>
+<div class="product-item" data-name="Pink rose Bouquet" data-price="30" data-category="bouquet">
+                <img src="Pink rose Bouquet.jpg" alt="Pink rose Bouquet">
+                <h3>Pink rose bouquet</h3>
+                <p>$20.00</p>
+                <button class="add-to-cart">Add to Cart</button>
+                <button class="add-to-wishlist">Add to Wishlist</button>
+                <button class="view-details">View Details</button>
+            </div>
+<div class="product-item" data-name="White rose Bunch" data-price="20" data-category="bunch">
+                <img src="White rose Bunch.jpg" alt="White rose Bunch">
+                <h3>white rose bunch</h3>
+                <p>$20.00</p>
+                <button class="add-to-cart">Add to Cart</button>
+                <button class="add-to-wishlist">Add to Wishlist</button>
+                <button class="view-details">View Details</button>
+            </div>
+<div class="product-item" data-name="Pink lilies arrangement" data-price="20" data-category="arrangement">
+                <img src="Pink lilies arrangement.jpg" alt="Pink lilies arrangement">
+                <h3>pink lilies arrangement</h3>
+                <p>$20.00</p>
+                <button class="add-to-cart">Add to Cart</button>
+                <button class="add-to-wishlist">Add to Wishlist</button>
+                <button class="view-details">View Details</button>
+            </div>
+<div class="product-item" data-name="Yellow and pink roses Bunch" data-price="40" data-category="bunch">
+                <img src="Yellow and pink roses Bunch.jpg" alt="Yellow and pink roses Bunch">
+                <h3>Yellow and pink roses Bunch</h3>
+                <p>$20.00</p>
+                <button class="add-to-cart">Add to Cart</button>
+                <button class="add-to-wishlist">Add to Wishlist</button>
+                <button class="view-details">View Details</button>
+            </div>
+<div class="product-item" data-name="Mix roses arrangenemt" data-price="20" data-category="arrangenemt">
+                <img src="Mix roses arrangenemt.jpg" alt="Mix roses arrangenemt">
+                <h3>Mix roses arrangenemt</h3>
+                <p>$20.00</p>
+                <button class="add-to-cart">Add to Cart</button>
+                <button class="add-to-wishlist">Add to Wishlist</button>
+                <button class="view-details">View Details</button>
+            </div>
+<div class="product-item" data-name="Gerberas Bunch" data-price="20" data-category="bunch">
+                <img src="Gerberas Bunch.jpg" alt="Gerberas Bunch">
+                <h3>Gerberas Bunch</h3>
+                <p>$20.00</p>
+                <button class="add-to-cart">Add to Cart</button>
+                <button class="add-to-wishlist">Add to Wishlist</button>
+                <button class="view-details">View Details</button>
+            </div>
+<div class="product-item" data-name="Pink carnations Bouquet" data-price="20" data-category="bouquet">
+                <img src="Pink carnations Bouquet.jpg" alt="Pink carnations Bouquet">
+                <h3>Pink carnations Bouquet</h3>
+                <p>$20.00</p>
+                <button class="add-to-cart">Add to Cart</button>
+                <button class="add-to-wishlist">Add to Wishlist</button>
+                <button class="view-details">View Details</button>
+            </div>
+<div class="product-item" data-name="White lilies Bunch" data-price="20" data-category="bunch">
+                <img src="White lilies Bunch.jpg" alt="White lilies Bunch">
+                <h3>White lilies Bunch</h3>
+                <p>$20.00</p>
+                <button class="add-to-cart">Add to Cart</button>
+                <button class="add-to-wishlist">Add to Wishlist</button>
+                <button class="view-details">View Details</button>
+            </div>
+        </div>
+    </section>
+    <section id="reviews">
+        <h2>Customer Reviews</h2>
+        <div class="review">
+            <img src="customer1.jpg" alt="Customer Photo">
+            <div class="review-content">
+                <p><strong>Jane Doe</strong></p>
+                <p>Beautiful flowers and excellent service! Will definitely order again.</p>
+            </div>
+        </div>
+        <div class="review">
+            <img src="customer2.jpg" alt="Customer Photo">
+            <div class="review-content">
+                <p><strong>John Smith</strong></p>
+                <p>The arrangements for our wedding were stunning. Thank you, Bloomify!</p>
+            </div>
+        </div>
+        <div class="review">
+            <img src="customer3.jpg" alt="Customer Photo">
+            <div class="review-content">
+                <p><strong>Sarah Lee</strong></p>
+                <p>Ordered a weekly subscription and the flowers are always fresh and beautiful.</p>
+            </div>
+        </div>
+        <button onclick="openReviewModal()">Submit a Review</button>
+    </section>
+    <section id="contact">
+        <h2>Contact Us</h2>
+        <p>Have any questions? Reach out to us and we'll be happy to help!</p>
+        <p>Email: info@bloomify.com</p>
+        <p>Phone: (123) 456-7890</p>
+        <div class="map-container">
+            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3153.0863480668977!2d144.95543131511842!3d-37.81720997975192!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x6ad642af0f11fd81%3A0x5045675218ce6e0!2sMelbourne%20VIC%2C%20Australia!5e0!3m2!1sen!2sus!4v1619078260745!5m2!1sen!2sus" allowfullscreen="" loading="lazy"></iframe>
+        </div>
+    </section>
+    <section class="newsletter">
+        <h2>Subscribe to our Newsletter</h2>
+        <p>Stay updated with the latest news and special offers from Bloomify!</p>
+        <input type="email" id="newsletter-email" placeholder="Enter your email">
+        <button onclick="subscribeNewsletter()">Subscribe</button>
+    </section>
+    <footer>
+        <p>&copy; 2023 Bloomify. All rights reserved.</p>
+        <p><a href="#privacy">Privacy Policy</a> | <a href="#terms">Terms of Service</a></p>
+    </footer>
+    <div id="product-modal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeProductModal()">&times;</span>
+            <h2 id="product-modal-title"></h2>
+            <img id="product-modal-image" src="" alt="Product Image">
+            <p id="product-modal-description"></p>
+            <p id="product-modal-price"></p>
+        </div>
+    </div>
+    <div id="review-modal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeReviewModal()">&times;</span>
+            <h2>Submit a Review</h2>
+            <form id="review-form">
+                <label for="review-name">Name:</label>
+                <input type="text" id="review-name" name="review-name" required>
+                <br><br>
+                <label for="review-content">Review:</label>
+                <textarea id="review-content" name="review-content" required></textarea>
+                <br><br>
+                <button type="submit">Submit</button>
+            </form>
+        </div>
+    </div>
+    <script>
+        // Search functionality
+        function searchProducts() {
+            var input = document.getElementById('search').value.toLowerCase();
+            var productItems = document.querySelectorAll('.product-item');
+            productItems.forEach(function(item) {
+                var name = item.getAttribute('data-name').toLowerCase();
+                if (name.includes(input)) {
+                    item.style.display = 'block';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        }
+
+        // Filter by category functionality
+        function filterByCategory() {
+            var category = document.getElementById('category').value;
+            var productItems = document.querySelectorAll('.product-item');
+            productItems.forEach(function(item) {
+                if (category === 'all' || item.getAttribute('data-category') === category) {
+                    item.style.display = 'block';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        }
+
+        // Add to cart functionality
+        document.querySelectorAll('.add-to-cart').forEach(function(button) {
+            button.addEventListener('click', function() {
+                var productItem = button.closest('.product-item');
+                var name = productItem.getAttribute('data-name');
+                var price = parseFloat(productItem.getAttribute('data-price'));
+                var cartItemsList = document.getElementById('cart-items-list');
+                var listItem = document.createElement('li');
+                listItem.textContent = name + ' - $' + price.toFixed(2);
+                var removeButton = document.createElement('button');
+                removeButton.textContent = 'Remove';
+                removeButton.addEventListener('click', function() {
+                    cartItemsList.removeChild(listItem);
+                    updateCartCount();
+                    updateTotalPrice();
+                });
+                listItem.appendChild(removeButton);
+                cartItemsList.appendChild(listItem);
+                updateCartCount();
+                updateTotalPrice();
+            });
+        });
+
+        // Add to wishlist functionality
+        document.querySelectorAll('.add-to-wishlist').forEach(function(button) {
+            button.addEventListener('click', function() {
+                var productItem = button.closest('.product-item');
+                var name = productItem.getAttribute('data-name');
+                var wishlistItemsList = document.getElementById('wishlist-items-list');
+                var listItem = document.createElement('li');
+                listItem.textContent = name;
+                var removeButton = document.createElement('button');
+                removeButton.textContent = 'Remove';
+                removeButton.addEventListener('click', function() {
+                    wishlistItemsList.removeChild(listItem);
+                });
+                listItem.appendChild(removeButton);
+                wishlistItemsList.appendChild(listItem);
+            });
+        });
+
+        // View details functionality
+        document.querySelectorAll('.view-details').forEach(function(button) {
+            button.addEventListener('click', function() {
+                var productItem = button.closest('.product-item');
+                var name = productItem.getAttribute('data-name');
+                var price = productItem.getAttribute('data-price');
+                var imageSrc = productItem.querySelector('img').src;
+                var description = productItem.querySelector('p').textContent;
+                document.getElementById('product-modal-title').textContent = name;
+                document.getElementById('product-modal-image').src = imageSrc;
+                document.getElementById('product-modal-description').textContent = description;
+                document.getElementById('product-modal-price').textContent = '$' + price;
+                document.getElementById('product-modal').style.display = 'block';
+            });
+        });
+
+        // Close product modal
+        function closeProductModal() {
+            document.getElementById('product-modal').style.display = 'none';
+        }
+
+        // Open and close review modal
+        function openReviewModal() {
+            document.getElementById('review-modal').style.display = 'block';
+        }
+        function closeReviewModal() {
+            document.getElementById('review-modal').style.display = 'none';
+        }
+
+        // Submit review
+        document.getElementById('review-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+            var name = document.getElementById('review-name').value;
+            var content = document.getElementById('review-content').value;
+            var reviewSection = document.getElementById('reviews');
+            var review = document.createElement('div');
+            review.classList.add('review');
+            review.innerHTML = '<img src="customer-placeholder.jpg" alt="Customer Photo"><div class="review-content"><p><strong>' + name + '</strong></p><p>' + content + '</p></div>';
+            reviewSection.insertBefore(review, reviewSection.lastElementChild);
+            closeReviewModal();
+        });
+
+        // User authentication functionality
+        document.getElementById('login').addEventListener('click', function() {
+            document.getElementById('login-modal').style.display = 'block';
+        });
+        document.getElementById('login-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+            var username = document.getElementById('username').value;
+            var password = document.getElementById('password').value;
+            if (username === 'user' && password === 'pass') {
+                alert('Login successful!');
+                document.getElementById('login-modal').style.display = 'none';
+            } else {
+                alert('Invalid username or password');
+            }
+        });
+
+        // Subscribe to newsletter functionality
+        function subscribeNewsletter() {
+            var email = document.getElementById('newsletter-email').value;
+            if (email) {
+                alert('Subscribed to newsletter successfully!');
+            } else {
+                alert('Please enter a valid email address.');
+            }
+        }
+
+        // Update cart count
+        function updateCartCount() {
+            var cartCount = document.getElementById('cart-items-list').children.length;
+            document.getElementById('cart-count').textContent = cartCount;
+        }
+
+        // Update total price
+        function updateTotalPrice() {
+            var cartItemsList = document.getElementById('cart-items-list');
+            var totalPrice = 0;
+            cartItemsList.querySelectorAll('li').forEach(function(item) {
+                var price = parseFloat(item.textContent.split('- $')[1]);
+                totalPrice += price;
+            });
+            document.getElementById('total-price').textContent = 'Total: $' + totalPrice.toFixed(2);
+        }
+
+        // Toggle cart visibility
+        document.getElementById('cart').addEventListener('click', function() {
+            var cartItems = document.getElementById('cart-items');
+            if (cartItems.style.display === 'none' || cartItems.style.display === '') {
+                cartItems.style.display = 'block';
+            } else {
+                cartItems.style.display = 'none';
+            }
+        });
+
+        // Close modals when clicking outside of them
+        window.onclick = function(event) {
+            var productModal = document.getElementById('product-modal');
+            var reviewModal = document.getElementById('review-modal');
+            var loginModal = document.getElementById('login-modal');
+            var cartItems = document.getElementById('cart-items');
+            if (event.target == productModal) {
+                productModal.style.display = 'none';
+            } else if (event.target == reviewModal) {
+                reviewModal.style.display = 'none';
+            } else if (event.target == loginModal) {
+                loginModal.style.display = 'none';
+            } else if (event.target != document.getElementById('cart') && event.target != document.getElementById('cart-items')) {
+                cartItems.style.display = 'none';
+            }
+        };
+    </script>
+</body>
+</html>
